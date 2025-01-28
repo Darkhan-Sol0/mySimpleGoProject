@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"myProg/keyEvent"
 	"os"
@@ -20,7 +19,7 @@ func InitGame() GameSetting {
 	}
 }
 
-func readKeys(keyChan chan []byte) {
+func readKeys(keyChan chan int) {
 	for {
 		key, err := keyEvent.KeyEvent()
 		if err == nil {
@@ -29,7 +28,7 @@ func readKeys(keyChan chan []byte) {
 	}
 }
 
-func GameLoop(a GameSetting, keyChan <-chan []byte) {
+func GameLoop(a GameSetting, keyChan <-chan int) {
 	timeout := time.NewTicker(time.Duration(a.delta * float64(time.Second)))
 
 	for {
@@ -43,24 +42,24 @@ func GameLoop(a GameSetting, keyChan <-chan []byte) {
 }
 
 func main() {
-	keyChan := make(chan []byte)
+	keyChan := make(chan int)
 	go readKeys(keyChan)
 	GameLoop(InitGame(), keyChan)
 }
 
-func KeyEvent(key []byte) {
-	// fmt.Println(key)
-	switch {
-	case bytes.Equal(key, []byte{27, 0, 0}):
+func KeyEvent(key int) {
+	switch key {
+	case 27:
 		os.Exit(0)
-	case bytes.Equal(key, []byte{27, 91, 65}):
-		fmt.Println("вверх")
-	case bytes.Equal(key, []byte{27, 91, 66}):
-		fmt.Println("вниз")
-	case bytes.Equal(key, []byte{27, 91, 67}):
-		fmt.Println("вправо")
-	case bytes.Equal(key, []byte{27, 91, 68}):
-		fmt.Println("влево")
+	case 65:
+		fmt.Print("вверх ")
+	case 66:
+		fmt.Print("вниз ")
+	case 67:
+		fmt.Print("вправо ")
+	case 68:
+		fmt.Print("влево ")
 	default:
+		fmt.Print("Клавиша ", key, " ")
 	}
 }
